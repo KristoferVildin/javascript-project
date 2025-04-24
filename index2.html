@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>F1 Season Results</title>
+</head>
+<body>
+    <h1 style="font-family:verdana;">F1 2024 Season Results</h1>
+
+    <div>
+        <canvas id="myChart"></canvas>
+      </div>
+
+      <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+
+const diagramCanvas = document.querySelector('#myChart')
+
+let teams = []
+let points = []
+
+fetch("http://ergast.com/api/f1/current/constructorStandings.json")
+.then(response => response.json())
+.then(result => {
+    console.log(result.MRData.StandingsTable.StandingsLists[0].ConstructorStandings)
+
+/* for-loop som lägger in lagen och poängen, men som jag noterade i redovisningen så kändes det väldigt trixigt att komma åt den datan jag vill ha. 
+Men förövrigt så är resten av koden följd av föreläsningen vi hade om chart.js
+*/
+
+    for(let i = 0; i < result.MRData.StandingsTable.StandingsLists[0].ConstructorStandings.length; i++){
+        teams.push(result.MRData.StandingsTable.StandingsLists[0].ConstructorStandings[i].Constructor.name)
+        points.push(result.MRData.StandingsTable.StandingsLists[0].ConstructorStandings[i].points)
+    }
+
+    new Chart(diagramCanvas, {
+        type: 'bar',
+        data: {
+          labels: teams, 
+          datasets: [{
+            label: 'Constructor Season Points',
+            data: points,
+            borderWidth: 1
+          }]
+        },
+        options: {
+          scales: {
+            y: {
+              beginAtZero: true
+            }
+          }
+        }
+      });
+})
+
+
+
+
+
+</script>
+    
+</body>
+</html>
